@@ -13,7 +13,7 @@ type boolAction struct {
 	refinementData RefinementData
 }
 
-type boolField struct {
+type BoolField struct {
 	value         *bool
 	name          string
 	optional      bool
@@ -22,22 +22,22 @@ type boolField struct {
 	abortEarly    bool
 }
 
-func (f *boolField) addValidation(fn func() error, code string) {
+func (f *BoolField) addValidation(fn func() error, code string) {
 	action := boolAction{validator: fn, code: code}
 	f.actions = append(f.actions, action)
 }
 
-func (f *boolField) addRefinement(fn func(bool) error, refinementData RefinementData) {
+func (f *BoolField) addRefinement(fn func(bool) error, refinementData RefinementData) {
 	action := boolAction{refinement: fn, refinementData: refinementData}
 	f.actions = append(f.actions, action)
 }
 
-func (f *boolField) addTransformer(fn func(bool) bool) {
+func (f *BoolField) addTransformer(fn func(bool) bool) {
 	action := boolAction{transformer: fn}
 	f.actions = append(f.actions, action)
 }
 
-func (f *boolField) _parse(errs *[]Error) bool {
+func (f *BoolField) _parse(errs *[]Error) bool {
 	if f.value == nil {
 		if !f.optional {
 			*errs = append(*errs, requiredFieldErr(f.name, f.requiredError))
@@ -88,25 +88,25 @@ func (f *boolField) _parse(errs *[]Error) bool {
 }
 
 // AbortEarly stops the parsing of the field on the first error
-func (f *boolField) AbortEarly() *boolField {
+func (f *BoolField) AbortEarly() *BoolField {
 	f.abortEarly = true
 	return f
 }
 
 // Optional makes the field optional
-func (f *boolField) Optional() *boolField {
+func (f *BoolField) Optional() *BoolField {
 	f.optional = true
 	return f
 }
 
 // Sets a custom error message if the field is missing
-func (f *boolField) RequiredError(message string) *boolField {
+func (f *BoolField) RequiredError(message string) *BoolField {
 	f.requiredError = message
 	return f
 }
 
 // Is checks if the field value is equal to the provided boolean value
-func (f *boolField) Is(value bool, message ...string) *boolField {
+func (f *BoolField) Is(value bool, message ...string) *BoolField {
 	fv := *f.value
 	code := CodeIs
 
@@ -129,7 +129,7 @@ func (f *boolField) Is(value bool, message ...string) *boolField {
 }
 
 // Refine lets you provide custom validation logic
-func (f *boolField) Refine(fn func(bool) error, refinementData ...RefinementData) *boolField {
+func (f *BoolField) Refine(fn func(bool) error, refinementData ...RefinementData) *BoolField {
 	var newRefinementData RefinementData
 	if len(refinementData) > 0 {
 		newRefinementData = refinementData[0]
@@ -140,13 +140,13 @@ func (f *boolField) Refine(fn func(bool) error, refinementData ...RefinementData
 }
 
 // Transform "transforms" the field value.
-func (f *boolField) Transform(fn func(bool) bool) *boolField {
+func (f *BoolField) Transform(fn func(bool) bool) *BoolField {
 	f.addTransformer(fn)
 	return f
 }
 
 // Parse parses the field and returns a slice of Error.
-func (f *boolField) Parse() []Error {
+func (f *BoolField) Parse() []Error {
 	var errs []Error
 	f._parse(&errs)
 	return errs
@@ -154,8 +154,8 @@ func (f *boolField) Parse() []Error {
 
 // Bool takes a pointer to a bool and a variadic argument 'name'.
 // Even if multiple values are passed for 'name', only the first value will be considered.
-func Bool(value *bool, name ...string) *boolField {
-	field := boolField{
+func Bool(value *bool, name ...string) *BoolField {
+	field := BoolField{
 		value: value,
 	}
 

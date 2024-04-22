@@ -13,7 +13,7 @@ type sliceAction[T any] struct {
 	refinementData RefinementData
 }
 
-type sliceField[T any] struct {
+type SliceField[T any] struct {
 	value         *[]T
 	name          string
 	optional      bool
@@ -22,22 +22,22 @@ type sliceField[T any] struct {
 	abortEarly    bool
 }
 
-func (f *sliceField[T]) addValidation(fn func() error, code string) {
+func (f *SliceField[T]) addValidation(fn func() error, code string) {
 	r := sliceAction[T]{validator: fn, code: code}
 	f.actions = append(f.actions, r)
 }
 
-func (f *sliceField[T]) addRefinement(fn func([]T) error, refinementData RefinementData) {
+func (f *SliceField[T]) addRefinement(fn func([]T) error, refinementData RefinementData) {
 	r := sliceAction[T]{refinement: fn, refinementData: refinementData}
 	f.actions = append(f.actions, r)
 }
 
-func (f *sliceField[T]) addTransformer(fn func([]T) []T) {
+func (f *SliceField[T]) addTransformer(fn func([]T) []T) {
 	r := sliceAction[T]{transformer: fn}
 	f.actions = append(f.actions, r)
 }
 
-func (f *sliceField[T]) _parse(errs *[]Error) bool {
+func (f *SliceField[T]) _parse(errs *[]Error) bool {
 	if f.value == nil {
 		if !f.optional {
 			*errs = append(*errs, requiredFieldErr(f.name, f.requiredError))
@@ -88,25 +88,25 @@ func (f *sliceField[T]) _parse(errs *[]Error) bool {
 }
 
 // AbortEarly stops the parsing of the field on the first error
-func (f *sliceField[T]) AbortEarly() *sliceField[T] {
+func (f *SliceField[T]) AbortEarly() *SliceField[T] {
 	f.abortEarly = true
 	return f
 }
 
 // Optional makes the field optional
-func (f *sliceField[T]) Optional() *sliceField[T] {
+func (f *SliceField[T]) Optional() *SliceField[T] {
 	f.optional = true
 	return f
 }
 
 // Sets a custom error message if the field is missing
-func (f *sliceField[T]) RequiredError(message string) *sliceField[T] {
+func (f *SliceField[T]) RequiredError(message string) *SliceField[T] {
 	f.requiredError = message
 	return f
 }
 
 // Min sets the minimum length of the slice
-func (f *sliceField[T]) Min(length int, message ...string) *sliceField[T] {
+func (f *SliceField[T]) Min(length int, message ...string) *SliceField[T] {
 	fv := *f.value
 	code := CodeMin
 
@@ -129,7 +129,7 @@ func (f *sliceField[T]) Min(length int, message ...string) *sliceField[T] {
 }
 
 // Max sets the maximum length of the slice
-func (f *sliceField[T]) Max(length int, message ...string) *sliceField[T] {
+func (f *SliceField[T]) Max(length int, message ...string) *SliceField[T] {
 	fv := *f.value
 	rule := "max"
 
@@ -152,7 +152,7 @@ func (f *sliceField[T]) Max(length int, message ...string) *sliceField[T] {
 }
 
 // Length checks if the slice has exactly the provided length
-func (f *sliceField[T]) Length(value int, message ...string) *sliceField[T] {
+func (f *SliceField[T]) Length(value int, message ...string) *SliceField[T] {
 	fv := *f.value
 	rule := "length"
 
@@ -175,7 +175,7 @@ func (f *sliceField[T]) Length(value int, message ...string) *sliceField[T] {
 }
 
 // Refine lets you provide custom validation logic
-func (f *sliceField[T]) Refine(fn func([]T) error, refinementData ...RefinementData) *sliceField[T] {
+func (f *SliceField[T]) Refine(fn func([]T) error, refinementData ...RefinementData) *SliceField[T] {
 	var newRefinementData RefinementData
 	if len(refinementData) > 0 {
 		newRefinementData = refinementData[0]
@@ -186,13 +186,13 @@ func (f *sliceField[T]) Refine(fn func([]T) error, refinementData ...RefinementD
 }
 
 // Transform "transforms" the field value.
-func (f *sliceField[T]) Transform(fn func([]T) []T) *sliceField[T] {
+func (f *SliceField[T]) Transform(fn func([]T) []T) *SliceField[T] {
 	f.addTransformer(fn)
 	return f
 }
 
 // Parse parses the field and returns a slice of Error.
-func (f *sliceField[T]) Parse() []Error {
+func (f *SliceField[T]) Parse() []Error {
 	var errs []Error
 	f._parse(&errs)
 	return errs
@@ -200,8 +200,8 @@ func (f *sliceField[T]) Parse() []Error {
 
 // Slice takes a pointer to a slice and a variadic argument 'name'.
 // Even if multiple values are passed for 'name', only the first value will be considered.
-func Slice[T any](value *[]T, name ...string) *sliceField[T] {
-	field := sliceField[T]{
+func Slice[T any](value *[]T, name ...string) *SliceField[T] {
+	field := SliceField[T]{
 		value: value,
 	}
 

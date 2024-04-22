@@ -13,7 +13,7 @@ type mapAction[T comparable, K any] struct {
 	refinementData RefinementData
 }
 
-type mapField[T comparable, K any] struct {
+type MapField[T comparable, K any] struct {
 	value         *map[T]K
 	name          string
 	optional      bool
@@ -22,22 +22,22 @@ type mapField[T comparable, K any] struct {
 	abortEarly    bool
 }
 
-func (f *mapField[T, K]) addValidation(fn func() error, code string) {
+func (f *MapField[T, K]) addValidation(fn func() error, code string) {
 	r := mapAction[T, K]{validator: fn, code: code}
 	f.actions = append(f.actions, r)
 }
 
-func (f *mapField[T, K]) addRefinement(fn func(map[T]K) error, refinementData RefinementData) {
+func (f *MapField[T, K]) addRefinement(fn func(map[T]K) error, refinementData RefinementData) {
 	r := mapAction[T, K]{refinement: fn, refinementData: refinementData}
 	f.actions = append(f.actions, r)
 }
 
-func (f *mapField[T, K]) addTransformer(fn func(map[T]K)) {
+func (f *MapField[T, K]) addTransformer(fn func(map[T]K)) {
 	r := mapAction[T, K]{transformer: fn}
 	f.actions = append(f.actions, r)
 }
 
-func (f *mapField[T, K]) _parse(errs *[]Error) bool {
+func (f *MapField[T, K]) _parse(errs *[]Error) bool {
 	if f.value == nil {
 		if !f.optional {
 			*errs = append(*errs, requiredFieldErr(f.name, f.requiredError))
@@ -88,25 +88,25 @@ func (f *mapField[T, K]) _parse(errs *[]Error) bool {
 }
 
 // AbortEarly stops the parsing of the field on the first error
-func (f *mapField[T, K]) AbortEarly() *mapField[T, K] {
+func (f *MapField[T, K]) AbortEarly() *MapField[T, K] {
 	f.abortEarly = true
 	return f
 }
 
 // Optional makes the field optional
-func (f *mapField[T, K]) Optional() *mapField[T, K] {
+func (f *MapField[T, K]) Optional() *MapField[T, K] {
 	f.optional = true
 	return f
 }
 
 // Sets a custom error message if the field is missing
-func (f *mapField[T, K]) RequiredError(message string) *mapField[T, K] {
+func (f *MapField[T, K]) RequiredError(message string) *MapField[T, K] {
 	f.requiredError = message
 	return f
 }
 
 // Min sets the minimum number of entries the map should have.
-func (f *mapField[T, K]) Min(size int, message ...string) *mapField[T, K] {
+func (f *MapField[T, K]) Min(size int, message ...string) *MapField[T, K] {
 	fv := *f.value
 	code := CodeMin
 
@@ -130,7 +130,7 @@ func (f *mapField[T, K]) Min(size int, message ...string) *mapField[T, K] {
 }
 
 // Max sets the maximum number of entries for the map
-func (f *mapField[T, K]) Max(size int, message ...string) *mapField[T, K] {
+func (f *MapField[T, K]) Max(size int, message ...string) *MapField[T, K] {
 	fv := *f.value
 	code := CodeMax
 
@@ -154,7 +154,7 @@ func (f *mapField[T, K]) Max(size int, message ...string) *mapField[T, K] {
 }
 
 // Refine lets you provide custom validation logic
-func (f *mapField[T, K]) Refine(fn func(map[T]K) error, refinementData ...RefinementData) *mapField[T, K] {
+func (f *MapField[T, K]) Refine(fn func(map[T]K) error, refinementData ...RefinementData) *MapField[T, K] {
 	var newRefinementData RefinementData
 	if len(refinementData) > 0 {
 		newRefinementData = refinementData[0]
@@ -165,13 +165,13 @@ func (f *mapField[T, K]) Refine(fn func(map[T]K) error, refinementData ...Refine
 }
 
 // Transform "transforms" the field value.
-func (f *mapField[T, K]) Transform(fn func(map[T]K)) *mapField[T, K] {
+func (f *MapField[T, K]) Transform(fn func(map[T]K)) *MapField[T, K] {
 	f.addTransformer(fn)
 	return f
 }
 
 // Parse parses the field and returns a slice of Error.
-func (f *mapField[T, K]) Parse() []Error {
+func (f *MapField[T, K]) Parse() []Error {
 	var errs []Error
 	f._parse(&errs)
 	return errs
@@ -179,8 +179,8 @@ func (f *mapField[T, K]) Parse() []Error {
 
 // Map takes a pointer to a map and a variadic argument 'name'.
 // Even if multiple values are passed for 'name', only the first value will be considered.
-func Map[T comparable, K any](value *map[T]K, name ...string) *mapField[T, K] {
-	field := mapField[T, K]{
+func Map[T comparable, K any](value *map[T]K, name ...string) *MapField[T, K] {
+	field := MapField[T, K]{
 		value: value,
 	}
 

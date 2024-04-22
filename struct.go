@@ -9,7 +9,7 @@ type structAction[T any] struct {
 	refinementData RefinementData
 }
 
-type structField[T any] struct {
+type StructField[T any] struct {
 	value         *T
 	name          string
 	optional      bool
@@ -18,17 +18,17 @@ type structField[T any] struct {
 	abortEarly    bool
 }
 
-func (f *structField[T]) addRefinement(fn func(T) error, refinementData RefinementData) {
+func (f *StructField[T]) addRefinement(fn func(T) error, refinementData RefinementData) {
 	action := structAction[T]{refinement: fn, refinementData: refinementData}
 	f.actions = append(f.actions, action)
 }
 
-func (f *structField[T]) addTransformer(fn func(T) T) {
+func (f *StructField[T]) addTransformer(fn func(T) T) {
 	action := structAction[T]{transformer: fn}
 	f.actions = append(f.actions, action)
 }
 
-func (f *structField[T]) _parse(errs *[]Error) bool {
+func (f *StructField[T]) _parse(errs *[]Error) bool {
 	if f.value == nil {
 		if !f.optional {
 			*errs = append(*errs, requiredFieldErr(f.name, f.requiredError))
@@ -79,25 +79,25 @@ func (f *structField[T]) _parse(errs *[]Error) bool {
 }
 
 // AbortEarly stops the parsing of the field on the first error
-func (f *structField[T]) AbortEarly() *structField[T] {
+func (f *StructField[T]) AbortEarly() *StructField[T] {
 	f.abortEarly = true
 	return f
 }
 
 // Optional makes the field optional
-func (f *structField[T]) Optional() *structField[T] {
+func (f *StructField[T]) Optional() *StructField[T] {
 	f.optional = true
 	return f
 }
 
 // Sets a custom error message if the field is missing
-func (f *structField[T]) RequiredError(message string) *structField[T] {
+func (f *StructField[T]) RequiredError(message string) *StructField[T] {
 	f.requiredError = message
 	return f
 }
 
 // Fields take in fields of the struct and validates them
-func (f *structField[T]) Fields(fields ...field) *structField[T] {
+func (f *StructField[T]) Fields(fields ...field) *StructField[T] {
 	for _, field := range fields {
 		action := structAction[T]{field: field}
 		f.actions = append(f.actions, action)
@@ -106,7 +106,7 @@ func (f *structField[T]) Fields(fields ...field) *structField[T] {
 }
 
 // Refine lets you provide custom validation logic
-func (f *structField[T]) Refine(fn func(T) error, refinementData ...RefinementData) *structField[T] {
+func (f *StructField[T]) Refine(fn func(T) error, refinementData ...RefinementData) *StructField[T] {
 	var newRefinementData RefinementData
 	if len(refinementData) > 0 {
 		newRefinementData = refinementData[0]
@@ -117,13 +117,13 @@ func (f *structField[T]) Refine(fn func(T) error, refinementData ...RefinementDa
 }
 
 // Transform "transforms" the field value.
-func (f *structField[T]) Transform(fn func(T) T) *structField[T] {
+func (f *StructField[T]) Transform(fn func(T) T) *StructField[T] {
 	f.addTransformer(fn)
 	return f
 }
 
 // Parse parses the field and returns a slice of Error.
-func (f *structField[T]) Parse() []Error {
+func (f *StructField[T]) Parse() []Error {
 	var errs []Error
 	f._parse(&errs)
 	return errs
@@ -131,8 +131,8 @@ func (f *structField[T]) Parse() []Error {
 
 // Struct takes a pointer to a struct and a variadic argument 'name'.
 // Even if multiple values are passed for 'name', only the first value will be considered.
-func Struct[T any](value *T, name ...string) *structField[T] {
-	field := structField[T]{
+func Struct[T any](value *T, name ...string) *StructField[T] {
+	field := StructField[T]{
 		value: value,
 	}
 

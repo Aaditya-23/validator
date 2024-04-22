@@ -14,7 +14,7 @@ type stringAction struct {
 	refinementData RefinementData
 }
 
-type stringField struct {
+type StringField struct {
 	value         *string
 	name          string
 	optional      bool
@@ -23,22 +23,22 @@ type stringField struct {
 	abortEarly    bool
 }
 
-func (f *stringField) addValidation(fn func() error, code string) {
+func (f *StringField) addValidation(fn func() error, code string) {
 	action := stringAction{validator: fn, code: code}
 	f.actions = append(f.actions, action)
 }
 
-func (f *stringField) addRefinement(fn func(string) error, refinementData RefinementData) {
+func (f *StringField) addRefinement(fn func(string) error, refinementData RefinementData) {
 	action := stringAction{refinement: fn, refinementData: refinementData}
 	f.actions = append(f.actions, action)
 }
 
-func (f *stringField) addTransformer(fn func(string) string) {
+func (f *StringField) addTransformer(fn func(string) string) {
 	action := stringAction{transformer: fn}
 	f.actions = append(f.actions, action)
 }
 
-func (f *stringField) _parse(errs *[]Error) bool {
+func (f *StringField) _parse(errs *[]Error) bool {
 	if f.value == nil {
 		if !f.optional {
 			*errs = append(*errs, requiredFieldErr(f.name, f.requiredError))
@@ -89,25 +89,25 @@ func (f *stringField) _parse(errs *[]Error) bool {
 }
 
 // AbortEarly stops the parsing of the field on the first error
-func (f *stringField) AbortEarly() *stringField {
+func (f *StringField) AbortEarly() *StringField {
 	f.abortEarly = true
 	return f
 }
 
 // Optional makes the field optional
-func (f *stringField) Optional() *stringField {
+func (f *StringField) Optional() *StringField {
 	f.optional = true
 	return f
 }
 
 // Sets a custom error message if the field is missing
-func (f *stringField) RequiredError(message string) *stringField {
+func (f *StringField) RequiredError(message string) *StringField {
 	f.requiredError = message
 	return f
 }
 
 // Min checks if the field value has the provided minimum length
-func (f *stringField) Min(length int, message ...string) *stringField {
+func (f *StringField) Min(length int, message ...string) *StringField {
 	fv := *f.value
 	code := CodeMin
 
@@ -131,7 +131,7 @@ func (f *stringField) Min(length int, message ...string) *stringField {
 }
 
 // Max checks if the field value has the provided maximum length
-func (f *stringField) Max(length int, message ...string) *stringField {
+func (f *StringField) Max(length int, message ...string) *StringField {
 	fv := *f.value
 	code := CodeMax
 
@@ -155,7 +155,7 @@ func (f *stringField) Max(length int, message ...string) *stringField {
 }
 
 // Length checks if the field value has the provided length
-func (f *stringField) Length(value int, message ...string) *stringField {
+func (f *StringField) Length(value int, message ...string) *StringField {
 	fv := *f.value
 	code := CodeLength
 
@@ -179,7 +179,7 @@ func (f *stringField) Length(value int, message ...string) *stringField {
 }
 
 // Contains checks if the field value contains the provided substring
-func (f *stringField) Contains(substr string, message ...string) *stringField {
+func (f *StringField) Contains(substr string, message ...string) *StringField {
 	fv := *f.value
 	code := CodeContains
 
@@ -203,7 +203,7 @@ func (f *stringField) Contains(substr string, message ...string) *stringField {
 }
 
 // Email checks if the field value is a valid email address
-func (f *stringField) Email(message ...string) *stringField {
+func (f *StringField) Email(message ...string) *StringField {
 	fv := *f.value
 	code := CodeEmail
 
@@ -228,7 +228,7 @@ func (f *stringField) Email(message ...string) *stringField {
 }
 
 // UUID checks if the field value is a valid UUID
-func (f *stringField) UUID(message ...string) *stringField {
+func (f *StringField) UUID(message ...string) *StringField {
 	fv := *f.value
 	code := CodeUUID
 
@@ -253,7 +253,7 @@ func (f *stringField) UUID(message ...string) *stringField {
 }
 
 // URL checks if the field value is a valid URL
-func (f *stringField) URL(message ...string) *stringField {
+func (f *StringField) URL(message ...string) *StringField {
 	fv := *f.value
 	code := CodeURL
 
@@ -278,7 +278,7 @@ func (f *stringField) URL(message ...string) *stringField {
 }
 
 // EndsWith checks if the field value ends with the provided value
-func (f *stringField) EndsWith(value string, message ...string) *stringField {
+func (f *StringField) EndsWith(value string, message ...string) *StringField {
 	fv := *f.value
 	code := CodeEndsWith
 
@@ -301,7 +301,7 @@ func (f *stringField) EndsWith(value string, message ...string) *stringField {
 }
 
 // StartsWith checks if the field value starts with the provided value
-func (f *stringField) StartsWith(value string, message ...string) *stringField {
+func (f *StringField) StartsWith(value string, message ...string) *StringField {
 	fv := *f.value
 	code := CodeStartsWith
 
@@ -324,7 +324,7 @@ func (f *stringField) StartsWith(value string, message ...string) *stringField {
 }
 
 // Alpha checks if the field value contains only alphabets
-func (f *stringField) Alpha(message ...string) *stringField {
+func (f *StringField) Alpha(message ...string) *StringField {
 	fv := *f.value
 	code := CodeAlpha
 
@@ -349,7 +349,7 @@ func (f *stringField) Alpha(message ...string) *stringField {
 }
 
 // Numeric checks if the field value contains only numbers
-func (f *stringField) Numeric(message ...string) *stringField {
+func (f *StringField) Numeric(message ...string) *StringField {
 	fv := *f.value
 	code := "numeric"
 
@@ -374,7 +374,7 @@ func (f *stringField) Numeric(message ...string) *stringField {
 }
 
 // AlphaNumeric checks if the field value contains only alphabets and numbers
-func (f *stringField) AlphaNumeric(message ...string) *stringField {
+func (f *StringField) AlphaNumeric(message ...string) *StringField {
 	fv := *f.value
 	code := CodeAlphaNumeric
 
@@ -399,7 +399,7 @@ func (f *stringField) AlphaNumeric(message ...string) *stringField {
 }
 
 // IsOneOf checks if the field value is one of the values passed in the slice
-func (f *stringField) IsOneOf(values []string, message ...string) *stringField {
+func (f *StringField) IsOneOf(values []string, message ...string) *StringField {
 	fv := *f.value
 	code := CodeIsOneOf
 
@@ -425,7 +425,7 @@ func (f *stringField) IsOneOf(values []string, message ...string) *stringField {
 }
 
 // TrimSpace trims the leading and trailing spaces from the field value
-func (f *stringField) TrimSpace() *stringField {
+func (f *StringField) TrimSpace() *StringField {
 	fn := func(value string) string {
 		return strings.TrimSpace(value)
 	}
@@ -435,7 +435,7 @@ func (f *stringField) TrimSpace() *stringField {
 }
 
 // ToUpperCase converts the lowercase characters to uppercase
-func (f *stringField) ToLowerCase() *stringField {
+func (f *StringField) ToLowerCase() *StringField {
 	fn := func(value string) string {
 		return strings.ToLower(value)
 	}
@@ -445,7 +445,7 @@ func (f *stringField) ToLowerCase() *stringField {
 }
 
 // Refine lets you provide custom validation logic
-func (f *stringField) Refine(fn func(field string) error, refinementData ...RefinementData) *stringField {
+func (f *StringField) Refine(fn func(field string) error, refinementData ...RefinementData) *StringField {
 	var newRefinementData RefinementData
 	if len(refinementData) > 0 {
 		newRefinementData = refinementData[0]
@@ -456,13 +456,13 @@ func (f *stringField) Refine(fn func(field string) error, refinementData ...Refi
 }
 
 // Transform "transforms" the field value.
-func (f *stringField) Transform(fn func(string) string) *stringField {
+func (f *StringField) Transform(fn func(string) string) *StringField {
 	f.addTransformer(fn)
 	return f
 }
 
 // Parse parses the field and returns a slice of Error.
-func (f *stringField) Parse() []Error {
+func (f *StringField) Parse() []Error {
 	var errs []Error
 	f._parse(&errs)
 	return errs
@@ -470,8 +470,8 @@ func (f *stringField) Parse() []Error {
 
 // String takes a pointer to a string and a variadic argument 'name'.
 // Even if multiple values are passed for 'name', only the first value will be considered.
-func String(value *string, name ...string) *stringField {
-	field := stringField{
+func String(value *string, name ...string) *StringField {
+	field := StringField{
 		value: value,
 	}
 

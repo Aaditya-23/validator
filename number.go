@@ -17,7 +17,7 @@ type numberAction[T number] struct {
 	refinementData RefinementData
 }
 
-type numberField[T number] struct {
+type NumberField[T number] struct {
 	value         *T
 	name          string
 	optional      bool
@@ -26,22 +26,22 @@ type numberField[T number] struct {
 	abortEarly    bool
 }
 
-func (f *numberField[T]) addValidation(fn func() error, code string) {
+func (f *NumberField[T]) addValidation(fn func() error, code string) {
 	action := numberAction[T]{validator: fn, code: code}
 	f.actions = append(f.actions, action)
 }
 
-func (f *numberField[T]) addRefinement(fn func(T) error, refinementData RefinementData) {
+func (f *NumberField[T]) addRefinement(fn func(T) error, refinementData RefinementData) {
 	action := numberAction[T]{refinement: fn, refinementData: refinementData}
 	f.actions = append(f.actions, action)
 }
 
-func (f *numberField[T]) addTransformer(fn func(T) T) {
+func (f *NumberField[T]) addTransformer(fn func(T) T) {
 	action := numberAction[T]{transformer: fn}
 	f.actions = append(f.actions, action)
 }
 
-func (f *numberField[T]) _parse(errs *[]Error) bool {
+func (f *NumberField[T]) _parse(errs *[]Error) bool {
 	if f.value == nil {
 		if !f.optional {
 			*errs = append(*errs, requiredFieldErr(f.name, f.requiredError))
@@ -92,25 +92,25 @@ func (f *numberField[T]) _parse(errs *[]Error) bool {
 }
 
 // AbortEarly stops the parsing of the field on the first error
-func (f *numberField[T]) AbortEarly() *numberField[T] {
+func (f *NumberField[T]) AbortEarly() *NumberField[T] {
 	f.abortEarly = true
 	return f
 }
 
 // Optional makes the field optional
-func (f *numberField[T]) Optional() *numberField[T] {
+func (f *NumberField[T]) Optional() *NumberField[T] {
 	f.optional = true
 	return f
 }
 
 // Sets a custom error message if the field is missing
-func (f *numberField[T]) RequiredError(message string) *numberField[T] {
+func (f *NumberField[T]) RequiredError(message string) *NumberField[T] {
 	f.requiredError = message
 	return f
 }
 
 // Min sets the minimum value for the field.
-func (f *numberField[T]) Min(value T, message ...string) *numberField[T] {
+func (f *NumberField[T]) Min(value T, message ...string) *NumberField[T] {
 	fv := *f.value
 	code := CodeMin
 
@@ -134,7 +134,7 @@ func (f *numberField[T]) Min(value T, message ...string) *numberField[T] {
 }
 
 // Max sets the maximum value for the field.
-func (f *numberField[T]) Max(value T, message ...string) *numberField[T] {
+func (f *NumberField[T]) Max(value T, message ...string) *NumberField[T] {
 	fv := *f.value
 	code := CodeMax
 
@@ -158,7 +158,7 @@ func (f *numberField[T]) Max(value T, message ...string) *numberField[T] {
 }
 
 // Refine lets you provide custom validation logic
-func (f *numberField[T]) Refine(fn func(T) error, refinementData ...RefinementData) *numberField[T] {
+func (f *NumberField[T]) Refine(fn func(T) error, refinementData ...RefinementData) *NumberField[T] {
 	var newRefinementData RefinementData
 	if len(refinementData) > 0 {
 		newRefinementData = refinementData[0]
@@ -169,13 +169,13 @@ func (f *numberField[T]) Refine(fn func(T) error, refinementData ...RefinementDa
 }
 
 // Transform "transforms" the field value.
-func (f *numberField[T]) Transform(fn func(T) T) *numberField[T] {
+func (f *NumberField[T]) Transform(fn func(T) T) *NumberField[T] {
 	f.addTransformer(fn)
 	return f
 }
 
 // Parse parses the field and returns a slice of Error.
-func (f *numberField[T]) Parse() []Error {
+func (f *NumberField[T]) Parse() []Error {
 	var errs []Error
 	f._parse(&errs)
 	return errs
@@ -183,8 +183,8 @@ func (f *numberField[T]) Parse() []Error {
 
 // Number takes a pointer to a number and a variadic argument 'name'.
 // Even if multiple values are passed for 'name', only the first value will be considered.
-func Number[T number](value *T, name ...string) *numberField[T] {
-	field := numberField[T]{
+func Number[T number](value *T, name ...string) *NumberField[T] {
+	field := NumberField[T]{
 		value: value,
 	}
 
